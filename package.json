@@ -1,0 +1,59 @@
+{
+  "name": "effect-atom-practical-examples",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "pnpm@10.3.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "check": "tsgo -b",
+    "lint": "oxlint -c .oxlintrc.json --tsconfig tsconfig.app.json --type-aware --quiet src && oxlint -c .oxlintrc.json --tsconfig tsconfig.node.json --type-aware --quiet vite.config.ts",
+    "lint:fix": "oxlint -c .oxlintrc.json --fix --tsconfig tsconfig.app.json --type-aware --quiet src && oxlint -c .oxlintrc.json --fix --tsconfig tsconfig.node.json --type-aware --quiet vite.config.ts",
+    "format": "dprint fmt",
+    "format:check": "dprint check",
+    "preview": "vite preview",
+    "prepare": "husky",
+    "typecheck": "tsgo -b"
+  },
+  "dependencies": {
+    "@effect-atom/atom": "0.5.3",
+    "@effect-atom/atom-react": "0.5.0",
+    "@effect/experimental": "0.58.0",
+    "@effect/platform": "0.94.2",
+    "@effect/platform-browser": "0.74.0",
+    "@effect/rpc": "0.73.0",
+    "@fontsource/ibm-plex-mono": "^5.2.6",
+    "@fontsource/space-grotesk": "^5.2.8",
+    "@lucas-barake/effect-form": "0.25.0",
+    "@lucas-barake/effect-form-react": "0.26.0",
+    "effect": "3.19.15",
+    "lucide-react": "^0.554.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "scheduler": "^0.27.0"
+  },
+  "devDependencies": {
+    "@effect-atom-examples/scripts": "file:./scripts",
+    "@types/node": "^24.12.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@typescript/native-preview": "7.0.0-dev.20260205.1",
+    "@vitejs/plugin-react": "^6.0.1",
+    "dprint": "0.48.0",
+    "husky": "9.1.7",
+    "lint-staged": "15.4.3",
+    "oxlint": "1.23.0",
+    "oxlint-tsgolint": "0.2.0",
+    "typescript": "5.9.3",
+    "vite": "^8.0.12"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": "dprint fmt"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "dprint"
+    ]
+  }
+}

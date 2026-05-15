@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "jsPlugins": ["@effect-atom-examples/scripts/oxlint-rules"],
+  "rules": {
+    "example/enforce-effect-namespace": "error"
+  },
+  "ignorePatterns": ["**/dist", "**/build", "**/*.md", "**/node_modules"]
+}

@@ -1,0 +1,590 @@
+:root {
+  font-family: "Space Grotesk", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #edf2ee;
+  background:
+    radial-gradient(circle at top left, rgba(33, 94, 83, 0.4), transparent 30%),
+    radial-gradient(circle at 85% 20%, rgba(156, 91, 52, 0.28), transparent 30%),
+    linear-gradient(180deg, #0c1211 0%, #0a0f0f 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --surface: rgba(17, 24, 23, 0.82);
+  --surface-strong: rgba(22, 31, 30, 0.96);
+  --surface-border: rgba(237, 242, 238, 0.1);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+  --ink-soft: rgba(237, 242, 238, 0.74);
+  --accent: #47c5a3;
+  --accent-soft: rgba(71, 197, 163, 0.18);
+  --warning: #ffb454;
+  --warning-soft: rgba(255, 180, 84, 0.16);
+  --danger: #ff7b72;
+  --danger-soft: rgba(255, 123, 114, 0.16);
+  --success: #59d499;
+  --success-soft: rgba(89, 212, 153, 0.18);
+  --muted: rgba(237, 242, 238, 0.08);
+  --mono: "IBM Plex Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+pre {
+  font-family: var(--mono);
+}
+
+.AppShell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.TabBar,
+.WorkspaceCard,
+.SidePanel,
+.MessageBubble,
+.ComposerForm,
+.ComposerToolbar,
+.PromptChip,
+.ToolCard,
+.DebugCard,
+.SummaryCard,
+.ScopeButton,
+.ScopeCard,
+.ReviewCard,
+.InfoBanner,
+.NoticeBanner,
+.ScopeSwitcher {
+  backdrop-filter: blur(18px);
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  box-shadow: var(--shadow);
+}
+
+.TabBar {
+  display: inline-flex;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.TabButton,
+.PromptChip,
+.PrimaryButton,
+.SecondaryButton,
+.GhostButton,
+.ScopeButton {
+  border: 0;
+  border-radius: 999px;
+  transition: transform 160ms ease, opacity 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.TabButton,
+.GhostButton,
+.SecondaryButton,
+.PromptChip {
+  background: rgba(237, 242, 238, 0.06);
+  color: #edf2ee;
+}
+
+.TabButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+}
+
+.TabButton.Selected,
+.ScopeButton.Selected,
+.ScopeCard.Selected {
+  background: rgba(237, 242, 238, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(71, 197, 163, 0.28);
+}
+
+.AppContent,
+.StackLarge,
+.StackSmall,
+.PromptRow,
+.ToolGroup,
+.MessageBody,
+.FormColumn,
+.FeatureList,
+.ReviewGrid,
+.ScopeList {
+  display: flex;
+  flex-direction: column;
+}
+
+.DemoGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.72fr);
+  gap: 20px;
+}
+
+.WorkspaceCard,
+.SidePanel {
+  border-radius: 26px;
+  padding: 20px;
+}
+
+.MessageList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 560px;
+  overflow: auto;
+  padding-right: 4px;
+  margin-bottom: 16px;
+}
+
+.MessageBubble {
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.MessageBubble.User {
+  background: rgba(237, 242, 238, 0.05);
+}
+
+.MessageBubble.Assistant {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.MessageHeader,
+.MessageIdentity,
+.ToolTitle,
+.ComposerToolbar,
+.ComposerFooter,
+.FieldHeader,
+.ScopeSwitcherHeader,
+.ToolbarRow,
+.ToolbarActions,
+.ReviewHeader,
+.ReviewActions,
+.DebugTitle,
+.NoticeBanner,
+.InfoBanner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.MessageHeader,
+.ComposerToolbar,
+.ComposerFooter,
+.ToolbarRow,
+.ReviewHeader {
+  justify-content: space-between;
+}
+
+.MessageAvatar,
+.PlaceholderIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.AssistantAvatar,
+.PlaceholderIcon {
+  background: linear-gradient(135deg, rgba(71, 197, 163, 0.22), rgba(74, 110, 173, 0.22));
+  color: var(--accent);
+}
+
+.UserAvatar {
+  width: auto;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(237, 242, 238, 0.08);
+  font-weight: 700;
+}
+
+.MessageBody,
+.ToolBody,
+.StackLarge,
+.StackSmall,
+.FormColumn {
+  gap: 14px;
+}
+
+.MessageText,
+.ToolBody p,
+.ReasoningBlock p,
+.ReviewContent,
+.PlaceholderStage p,
+.HintText,
+.ToolBody,
+.ScopeCard p,
+.ToolbarMeta p {
+  color: var(--ink-soft);
+}
+
+.ReasoningBlock {
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(237, 242, 238, 0.04);
+}
+
+.ReasoningBlock summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ReasoningBlock summary::-webkit-details-marker {
+  display: none;
+}
+
+.ToolCard,
+.ComposerForm,
+.ComposerToolbar,
+.DebugCard,
+.SummaryCard,
+.ScopeCard,
+.ReviewCard,
+.InfoBanner,
+.NoticeBanner,
+.ScopeSwitcher {
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.ToolBody,
+.ScopeList {
+  gap: 10px;
+}
+
+.ToolTitle,
+.ReviewHeader p,
+.ScopeCard p,
+.DebugTitle,
+.FieldLabel,
+.ScopeSwitcherHeader span,
+.HintText {
+  font-size: 0.9rem;
+}
+
+.FieldLabel,
+.DebugTitle,
+.ScopeTitle {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: rgba(237, 242, 238, 0.86);
+}
+
+.StatusPill,
+.StatusDot {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+}
+
+.StatusPill {
+  padding: 8px 12px;
+}
+
+.StatusDot {
+  padding: 4px 10px;
+  background: rgba(237, 242, 238, 0.08);
+}
+
+.StatusDot.Active,
+.StatusPill.Success,
+.InlineNotice.Success,
+.NoticeBanner.Success {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.StatusPill.Warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.StatusPill.Subtle,
+.NoticeBanner.Loading,
+.NoticeBanner.Neutral {
+  background: rgba(237, 242, 238, 0.06);
+  color: #edf2ee;
+}
+
+.NoticeBanner.Danger,
+.FieldError {
+  color: var(--danger);
+}
+
+.NoticeBanner.Danger,
+.ErrorBox {
+  background: var(--danger-soft);
+}
+
+.ComposerShell {
+  display: grid;
+  gap: 14px;
+}
+
+.PromptRow {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.PromptChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+}
+
+.ComposerForm,
+.ComposerToolbar {
+  display: grid;
+  gap: 14px;
+}
+
+.ComposerInput,
+.TextInput,
+.TextArea,
+.SelectInput,
+.SelectShell select {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(237, 242, 238, 0.1);
+  background: rgba(7, 12, 12, 0.7);
+  color: #edf2ee;
+  padding: 14px 16px;
+}
+
+.ComposerInput:focus,
+.TextInput:focus,
+.TextArea:focus,
+.SelectInput:focus,
+.SelectShell select:focus {
+  outline: none;
+  border-color: rgba(71, 197, 163, 0.4);
+  box-shadow: 0 0 0 4px rgba(71, 197, 163, 0.12);
+}
+
+.ComposerInput {
+  min-height: 92px;
+  resize: none;
+}
+
+.TextArea {
+  resize: vertical;
+}
+
+.PrimaryButton,
+.SecondaryButton,
+.GhostButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+}
+
+.PrimaryButton {
+  background: linear-gradient(135deg, #39b88f, #2c8f71);
+  color: #04110d;
+  font-weight: 700;
+}
+
+.PrimaryButton:disabled,
+.SecondaryButton:disabled,
+.GhostButton:disabled,
+.PromptChip:disabled,
+.TabButton:disabled,
+.ScopeButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.ModelMenu,
+.FormField,
+.FieldFrame {
+  display: grid;
+  gap: 8px;
+}
+
+.SelectShell {
+  position: relative;
+}
+
+.SelectShell svg {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.SelectShell select {
+  appearance: none;
+  padding-right: 38px;
+}
+
+.PlaceholderStage {
+  min-height: 280px;
+  display: grid;
+  place-items: center;
+  gap: 14px;
+  text-align: center;
+  border-radius: 18px;
+  border: 1px dashed rgba(237, 242, 238, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.PlaceholderStage.Compact {
+  min-height: 160px;
+}
+
+.FormLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.72fr);
+  gap: 18px;
+}
+
+.DualFieldRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ScopeButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ScopeButton {
+  min-width: 180px;
+  padding: 14px 16px;
+  text-align: left;
+  background: rgba(237, 242, 238, 0.06);
+  color: #edf2ee;
+}
+
+.ScopeButton small {
+  color: var(--ink-soft);
+}
+
+.InlineNotice.Success {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 10px 12px;
+}
+
+.FootnoteRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink-soft);
+}
+
+.ReviewCard {
+  display: grid;
+  gap: 14px;
+}
+
+.ViolationList {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--warning);
+}
+
+.ErrorBox {
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.DebugCard pre,
+.ErrorBox pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #d1e0d8;
+}
+
+.Spin {
+  animation: Spin 1s linear infinite;
+}
+
+@keyframes Spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1100px) {
+  .DemoGrid,
+  .FormLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .AppShell {
+    padding: 16px;
+  }
+
+  .TabBar {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .TabButton,
+  .ScopeButton,
+  .PromptChip,
+  .PrimaryButton,
+  .SecondaryButton,
+  .GhostButton {
+    width: 100%;
+  }
+
+  .PromptRow,
+  .ToolbarActions,
+  .ScopeButtons {
+    flex-direction: column;
+  }
+
+  .DualFieldRow {
+    grid-template-columns: 1fr;
+  }
+}
