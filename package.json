@@ -14,6 +14,8 @@
     "format:check": "dprint check",
     "preview": "vite preview",
     "prepare": "husky",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsgo -b"
   },
   "dependencies": {
@@ -35,18 +37,22 @@
   },
   "devDependencies": {
     "@effect-atom-examples/scripts": "file:./scripts",
+    "@effect/vitest": "^0.27.0",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@typescript/native-preview": "7.0.0-dev.20260205.1",
     "@vitejs/plugin-react": "^6.0.1",
+    "jsdom": "^27.2.0",
     "dprint": "0.48.0",
     "husky": "9.1.7",
     "lint-staged": "15.4.3",
     "oxlint": "1.23.0",
     "oxlint-tsgolint": "0.2.0",
     "typescript": "5.9.3",
-    "vite": "^8.0.12"
+    "vite": "^8.0.12",
+    "vitest": "^4.0.18"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,json,md}": "dprint fmt"

@@ -18,7 +18,7 @@ import {
 const ModelSchema = Schema.Literal("sonnet", "thinking", "gemini");
 const { Reasoning, Text, ToolGroup } = Data.taggedEnum<ContentBlock>();
 
-const runtime = Atom.runtime(
+export const runtime = Atom.runtime(
   Layer.mergeAll(
     AssistantStudio.layer,
     PlatformBrowser.BrowserKeyValueStore.layerLocalStorage,
@@ -88,7 +88,8 @@ const nextStreamState = (state: StreamState, event: AssistantEvent): StreamState
     }
     case "ToolStart": {
       const nextTool: ToolStatus = {
-        id: crypto.randomUUID(),
+        id: event.callId,
+        callId: event.callId,
         toolName: event.toolName,
         status: "start",
         input: event.input,
@@ -117,7 +118,7 @@ const nextStreamState = (state: StreamState, event: AssistantEvent): StreamState
             ? block
             : ToolGroup({
               tools: block.tools.map((tool) =>
-                tool.toolName === event.toolName && tool.status === "start"
+                tool.callId === event.callId && tool.status === "start"
                   ? { ...tool, status: "success" as const, output: event.output }
                   : tool
               ),
@@ -167,7 +168,9 @@ export const sendMessageAtom = runtime.fn<string>()((message) => {
             const latestMessages = registry.get(messagesAtom);
             const lastMessage = latestMessages[latestMessages.length - 1];
 
-            if (!lastMessage || lastMessage.role !== "assistant") {
+            if (
+              !lastMessage || lastMessage.role !== "assistant" || lastMessage.id !== assistantId
+            ) {
               return;
             }
 
@@ -184,6 +187,40 @@ export const sendMessageAtom = runtime.fn<string>()((message) => {
                   }
                   : item
               ),
+            );
+          })
+        ),
+        Stream.onError(() =>
+          Effect.sync(() => {
+            const latestMessages = registry.get(messagesAtom);
+            const lastMessage = latestMessages[latestMessages.length - 1];
+
+            if (
+              !lastMessage || lastMessage.role !== "assistant" || lastMessage.id !== assistantId
+            ) {
+              return;
+            }
+
+            registry.set(
+              messagesAtom,
+              latestMessages.map((item) => {
+                if (item.id !== assistantId) {
+                  return item;
+                }
+
+                const failureMessage = "Stream failed. Try again.";
+
+                return {
+                  ...item,
+                  content: item.content.length > 0
+                    ? `${item.content}\n\n${failureMessage}`
+                    : failureMessage,
+                  contentBlocks: [
+                    ...item.contentBlocks,
+                    Text({ content: failureMessage }),
+                  ],
+                };
+              }),
             );
           })
         ),

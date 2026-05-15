@@ -8,6 +8,7 @@ export type ModelId = "sonnet" | "thinking" | "gemini";
 
 export type ToolStatus = {
   readonly id: string;
+  readonly callId: string;
   readonly toolName: string;
   readonly status: "start" | "success";
   readonly input: string;
@@ -29,8 +30,16 @@ export type AssistantMessage = {
 
 export type AssistantEvent = Data.TaggedEnum<{
   readonly ReasoningChunk: { readonly delta: string; };
-  readonly ToolStart: { readonly toolName: string; readonly input: string; };
-  readonly ToolSuccess: { readonly toolName: string; readonly output: string; };
+  readonly ToolStart: {
+    readonly callId: string;
+    readonly toolName: string;
+    readonly input: string;
+  };
+  readonly ToolSuccess: {
+    readonly callId: string;
+    readonly toolName: string;
+    readonly output: string;
+  };
   readonly Chunk: { readonly delta: string; };
 }>;
 
@@ -83,8 +92,8 @@ const make = Effect.sync(() => {
       const chunks = answer.split(/(\s+)/).filter((part) => part.length > 0);
 
       return Stream.fromIterable([
-        ToolStart({ toolName: "InspectBrief", input: toolInput }),
-        ToolSuccess({ toolName: "InspectBrief", output: toolOutput }),
+        ToolStart({ callId: "inspect-brief", toolName: "InspectBrief", input: toolInput }),
+        ToolSuccess({ callId: "inspect-brief", toolName: "InspectBrief", output: toolOutput }),
         ReasoningChunk({ delta: `${reasoning} ` }),
         ...chunks.map((delta) => Chunk({ delta })),
       ]).pipe(

@@ -6,7 +6,7 @@ import * as Exit from "effect/Exit";
 import { type ReviewEvaluation, ReviewItem } from "./schema";
 import { ReviewLab } from "./service";
 
-const runtime = Atom.runtime(ReviewLab.layer);
+export const runtime = Atom.runtime(ReviewLab.layer);
 
 type ReviewItemsUpdate = Data.TaggedEnum<{
   readonly PatchItem: { readonly item: ReviewItem; };
@@ -63,24 +63,27 @@ export const reviewItemsAtom = (() => {
 })();
 
 export const runItemReviewAtom = Atom.family((itemId: string) => {
-  void itemId;
-
   return runtime
     .fn(
-      Effect.fn(function*(
-        payload: {
-          readonly itemId: string;
-          readonly title: string;
-          readonly content: string;
-        },
-        get: Atom.FnContext,
-      ) {
+      Effect.fn(function*(_: void, get: Atom.FnContext) {
+        get.mount(reviewItemsAtom);
+        const items = yield* get.result(reviewItemsAtom, { suspendOnWaiting: true });
+        const currentItem = items.find((item) => item.id === itemId);
+
+        if (currentItem === undefined) {
+          return yield* Effect.fail(new Error(`Missing review item: ${itemId}`));
+        }
+
         const lab = yield* ReviewLab;
-        const evaluation = yield* lab.runReview(payload);
+        const evaluation = yield* lab.runReview({
+          itemId,
+          title: currentItem.title,
+          content: currentItem.content,
+        });
         get.set(
           reviewItemsAtom,
           SetEvaluation({
-            itemId: payload.itemId,
+            itemId,
             evaluation,
           }),
         );
@@ -122,11 +125,7 @@ export const runReviewsAtom = runtime
       const [failed, succeeded] = yield* Effect.partition(
         selectedItems,
         (item) => {
-          get.set(runItemReviewAtom(item.id), {
-            itemId: item.id,
-            title: item.title,
-            content: item.content,
-          });
+          get.set(runItemReviewAtom(item.id), undefined);
 
           return get
             .result(runItemReviewAtom(item.id), { suspendOnWaiting: true })
@@ -194,17 +193,43 @@ export const fixAllAtom = runtime
         }
       }
 
+      let rerunFailures: readonly Cause.Cause<unknown>[] = [];
+      let rerunSuccessCount = succeeded.length;
+
       if (succeeded.length > 0) {
-        get.set(runReviewsAtom, {
-          itemIds: succeeded,
-          source: "fixAll",
-        });
+        get.set(lastReviewSourceAtom, "fixAll");
+
+        const rerunItems = (yield* get.result(reviewItemsAtom, { suspendOnWaiting: true })).filter((
+          item,
+        ) => succeeded.includes(item.id));
+
+        const [failedReruns, successfulReruns] = yield* Effect.partition(
+          rerunItems,
+          (item) => {
+            get.set(runItemReviewAtom(item.id), undefined);
+
+            return get
+              .result(runItemReviewAtom(item.id), { suspendOnWaiting: true })
+              .pipe(
+                Effect.flatMap((evaluation) =>
+                  evaluation.passed
+                    ? Effect.succeed(item.id)
+                    : Effect.fail(Cause.fail(new Error(`Fix review still failing: ${item.id}`)))
+                ),
+                Effect.catchAllCause((cause) => Effect.fail(cause)),
+              );
+          },
+          { concurrency: "unbounded" },
+        );
+
+        rerunFailures = failedReruns;
+        rerunSuccessCount = successfulReruns.length;
       }
 
       return {
-        successCount: succeeded.length,
-        failureCount: causes.length,
-        causes,
+        successCount: rerunSuccessCount,
+        failureCount: causes.length + rerunFailures.length,
+        causes: [...causes, ...rerunFailures],
       };
     }),
   )
